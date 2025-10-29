@@ -21,6 +21,11 @@ const mp3s = [
 ];
 
 const videosContainer = document.getElementById('videos-container');
+const topOffsetInput = document.getElementById('top-offset');
+const leftOffsetInput = document.getElementById('left-offset');
+const percentageSizeInput = document.getElementById('percentage-size');
+const speedInput = document.getElementById('speed');
+const startOffsetInput = document.getElementById('start-offset');
 
 const visemeMap = {
     'a': 'a-OOO-u.png',
@@ -30,6 +35,19 @@ const visemeMap = {
     'i': 'EEE-III.png',
     'l': 'L.png'
 };
+
+function updateVisemeStyles() {
+    const top = topOffsetInput.value + 'px';
+    const left = leftOffsetInput.value + 'px';
+    const scale = percentageSizeInput.value / 100;
+
+    const visemes = document.querySelectorAll('.viseme');
+    visemes.forEach(viseme => {
+        viseme.style.top = top;
+        viseme.style.left = left;
+        viseme.style.transform = `scale(${scale})`;
+    });
+}
 
 mp3s.forEach(mp3 => {
     const video = document.createElement('div');
@@ -56,30 +74,9 @@ mp3s.forEach(mp3 => {
     sentenceEl.textContent = sentence;
     video.appendChild(sentenceEl);
 
-    const controlsContainer = document.createElement('div');
-    controlsContainer.classList.add('controls');
-
-    const speedLabel = document.createElement('label');
-    speedLabel.textContent = 'Speed:';
-    const speedInput = document.createElement('input');
-    speedInput.type = 'number';
-    speedInput.value = 1;
-    controlsContainer.appendChild(speedLabel);
-    controlsContainer.appendChild(speedInput);
-
-    const offsetLabel = document.createElement('label');
-    offsetLabel.textContent = 'Start Offset:';
-    const offsetInput = document.createElement('input');
-    offsetInput.type = 'number';
-    offsetInput.value = 0;
-    controlsContainer.appendChild(offsetLabel);
-    controlsContainer.appendChild(offsetInput);
-
-    video.appendChild(controlsContainer);
-
     playButton.addEventListener('click', () => {
         const speed = parseFloat(speedInput.value) || 1;
-        const startOffset = parseInt(offsetInput.value) || 0;
+        const startOffset = parseInt(startOffsetInput.value) || 0;
 
         audio.play();
 
@@ -90,10 +87,6 @@ mp3s.forEach(mp3 => {
 
     videosContainer.appendChild(video);
 });
-
-let visemeX = 0;
-let visemeY = 0;
-let visemeScale = 1;
 
 function animateVisemes(sentence, visemeImg, speed) {
     let i = 0;
@@ -119,30 +112,9 @@ function animateVisemes(sentence, visemeImg, speed) {
     showNextViseme();
 }
 
-document.addEventListener('keydown', (e) => {
-    switch (e.key) {
-        case 'ArrowUp':
-            visemeY -= 5;
-            break;
-        case 'ArrowDown':
-            visemeY += 5;
-            break;
-        case 'ArrowLeft':
-            visemeX -= 5;
-            break;
-        case 'ArrowRight':
-            visemeX += 5;
-            break;
-        case 'q':
-            visemeScale += 0.1;
-            break;
-        case 'a':
-            visemeScale = Math.max(0.1, visemeScale - 0.1);
-            break;
-    }
+topOffsetInput.addEventListener('input', updateVisemeStyles);
+leftOffsetInput.addEventListener('input', updateVisemeStyles);
+percentageSizeInput.addEventListener('input', updateVisemeStyles);
 
-    const visemes = document.querySelectorAll('.viseme');
-    visemes.forEach(viseme => {
-        viseme.style.transform = `translate(${visemeX}px, ${visemeY}px) scale(${visemeScale})`;
-    });
-});
+// Initial application of styles
+updateVisemeStyles();

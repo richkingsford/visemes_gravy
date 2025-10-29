@@ -37,10 +37,7 @@ body {
 }
 
 .play-button {
-    position: relative;
-    bottom: auto;
-    left: 50%;
-    transform: translateX(-50%);
+    margin: 10px 0;
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
@@ -48,6 +45,16 @@ body {
     cursor: pointer;
 }
 
-#controls {
+#global-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+#global-controls div {
+    margin-bottom: 10px;
 }
