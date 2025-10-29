@@ -93,6 +93,7 @@ mp3s.forEach(mp3 => {
 
 let visemeX = 0;
 let visemeY = 0;
+let visemeScale = 1;
 
 function animateVisemes(sentence, visemeImg, speed) {
     let i = 0;
@@ -119,22 +120,29 @@ function animateVisemes(sentence, visemeImg, speed) {
 }
 
 document.addEventListener('keydown', (e) => {
+    switch (e.key) {
+        case 'ArrowUp':
+            visemeY -= 5;
+            break;
+        case 'ArrowDown':
+            visemeY += 5;
+            break;
+        case 'ArrowLeft':
+            visemeX -= 5;
+            break;
+        case 'ArrowRight':
+            visemeX += 5;
+            break;
+        case 'q':
+            visemeScale += 0.1;
+            break;
+        case 'a':
+            visemeScale = Math.max(0.1, visemeScale - 0.1);
+            break;
+    }
+
     const visemes = document.querySelectorAll('.viseme');
     visemes.forEach(viseme => {
-        switch (e.key) {
-            case 'ArrowUp':
-                visemeY -= 5;
-                break;
-            case 'ArrowDown':
-                visemeY += 5;
-                break;
-            case 'ArrowLeft':
-                visemeX -= 5;
-                break;
-            case 'ArrowRight':
-                visemeX += 5;
-                break;
-        }
-        viseme.style.transform = `translate(${visemeX}px, ${visemeY}px)`;
+        viseme.style.transform = `translate(${visemeX}px, ${visemeY}px) scale(${visemeScale})`;
     });
 });

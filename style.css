@@ -26,9 +26,14 @@ body {
 }
 
 .video img {
-    position: relative;
     width: 100%;
     height: auto;
+}
+
+.viseme {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .play-button {
