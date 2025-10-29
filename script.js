@@ -27,6 +27,9 @@ const percentageSizeInput = document.getElementById('percentage-size');
 const speedInput = document.getElementById('speed');
 const startOffsetInput = document.getElementById('start-offset');
 
+// Persistence key
+const STORAGE_KEY = 'visemes_gravy:global_controls';
+
 const visemeMap = {
     'a': 'a-OOO-u.png',
     'o': 'a-OOO-u.png',
@@ -112,9 +115,45 @@ function animateVisemes(sentence, visemeImg, speed) {
     showNextViseme();
 }
 
-topOffsetInput.addEventListener('input', updateVisemeStyles);
-leftOffsetInput.addEventListener('input', updateVisemeStyles);
-percentageSizeInput.addEventListener('input', updateVisemeStyles);
+// Save current inputs to localStorage
+function saveInputs() {
+    try {
+        const state = {
+            topOffset: topOffsetInput.value,
+            leftOffset: leftOffsetInput.value,
+            percentageSize: percentageSizeInput.value,
+            speed: speedInput.value,
+            startOffset: startOffsetInput.value
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+        console.warn('Could not save settings to localStorage', e);
+    }
+}
 
-// Initial application of styles
+// Load inputs from localStorage (if present)
+function loadInputs() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const state = JSON.parse(raw);
+        if (state.topOffset !== undefined) topOffsetInput.value = state.topOffset;
+        if (state.leftOffset !== undefined) leftOffsetInput.value = state.leftOffset;
+        if (state.percentageSize !== undefined) percentageSizeInput.value = state.percentageSize;
+        if (state.speed !== undefined) speedInput.value = state.speed;
+        if (state.startOffset !== undefined) startOffsetInput.value = state.startOffset;
+    } catch (e) {
+        console.warn('Could not load settings from localStorage', e);
+    }
+}
+
+// Hook inputs to save on change
+topOffsetInput.addEventListener('input', () => { updateVisemeStyles(); saveInputs(); });
+leftOffsetInput.addEventListener('input', () => { updateVisemeStyles(); saveInputs(); });
+percentageSizeInput.addEventListener('input', () => { updateVisemeStyles(); saveInputs(); });
+speedInput.addEventListener('input', saveInputs);
+startOffsetInput.addEventListener('input', saveInputs);
+
+// Load previously saved values (if any), then apply styles
+loadInputs();
 updateVisemeStyles();
